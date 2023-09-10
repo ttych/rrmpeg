@@ -8,5 +8,6 @@ gem 'reek', '~> 6.1', '>= 6.1.4'
 gem 'rubocop', '~> 1.56'
 gem 'rubocop-minitest', '~> 0.31.0'
 gem 'rubocop-rake', '~> 0.6.0'
+gem 'simplecov', '~> 0.22.0', require: false
 
 gemspec
