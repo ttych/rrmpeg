@@ -26,6 +26,10 @@ module RRmpeg
       File.extname(path).delete_prefix('.')
     end
 
+    def size
+      File.size(path)
+    end
+
     private
 
     def load_media

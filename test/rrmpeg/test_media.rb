@@ -94,4 +94,15 @@ describe RRmpeg::Media do
       end
     end
   end
+
+  describe 'size' do
+    it 'returns 0 for empty file size' do
+      in_tmpdir do |tmpdir|
+        video_path = tmpdir.add_tmpfile(ext: 'mp4')
+        media = RRmpeg::Media.new(video_path)
+
+        assert_equal 0, media.size
+      end
+    end
+  end
 end
