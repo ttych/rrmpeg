@@ -30,6 +30,18 @@ module RRmpeg
       File.size(path)
     end
 
+    def move_to(dest, force: false)
+      dest = File.expand_path(dest)
+      dest = File.join(dest, basename) if File.directory?(dest)
+
+      if File.exist?(dest) && !force
+        raise RRmpeg::Error, "cannot move #{path} to #{dest}, #{dest} already exists"
+      end
+
+      FileUtils.mv(path, dest, force: true)
+      @path = dest
+    end
+
     private
 
     def load_media

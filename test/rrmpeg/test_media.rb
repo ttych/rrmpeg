@@ -27,7 +27,15 @@ describe RRmpeg::Media do
     end
 
     it 'filters on ext name' do
-      # FIXME
+      in_tmpdir do |tmpdir|
+        video1 = tmpdir.add_tmpfile(name: 'video1', ext: 'mp4')
+        video2 = tmpdir.add_tmpfile(name: 'video2', ext: 'mp4')
+        tmpdir.add_tmpfile(name: 'video3', ext: 'avi')
+
+        media_paths = RRmpeg::Media.each(tmpdir.path, exts: [:mp4]).map(&:path)
+
+        assert_equal [video1, video2], media_paths
+      end
     end
   end
 
@@ -51,7 +59,7 @@ describe RRmpeg::Media do
     end
   end
 
-  describe 'dirname' do
+  describe '.dirname' do
     it 'returns Media dirname' do
       in_tmpdir do |tmpdir|
         video_path = tmpdir.add_tmpfile(ext: 'mp4')
@@ -62,7 +70,7 @@ describe RRmpeg::Media do
     end
   end
 
-  describe 'basename' do
+  describe '.basename' do
     it 'returns Media basename' do
       in_tmpdir do |tmpdir|
         video_path = tmpdir.add_tmpfile(name: 'video', ext: 'mp4')
@@ -73,7 +81,7 @@ describe RRmpeg::Media do
     end
   end
 
-  describe 'filename' do
+  describe '.filename' do
     it 'returns Media filename' do
       in_tmpdir do |tmpdir|
         video_path = tmpdir.add_tmpfile(name: 'video', ext: 'mp4')
@@ -84,7 +92,7 @@ describe RRmpeg::Media do
     end
   end
 
-  describe 'extname' do
+  describe '.extname' do
     it 'returns Media filename' do
       in_tmpdir do |tmpdir|
         video_path = tmpdir.add_tmpfile(ext: 'mp4')
@@ -95,13 +103,29 @@ describe RRmpeg::Media do
     end
   end
 
-  describe 'size' do
+  describe '.size' do
     it 'returns 0 for empty file size' do
       in_tmpdir do |tmpdir|
         video_path = tmpdir.add_tmpfile(ext: 'mp4')
         media = RRmpeg::Media.new(video_path)
 
         assert_equal 0, media.size
+      end
+    end
+  end
+
+  describe '.move_to' do
+    it 'moves file to specified destination' do
+      in_tmpdir do |tmpdir|
+        video_path = tmpdir.add_tmpfile(name: 'video', ext: 'mp4')
+        media = RRmpeg::Media.new(video_path)
+
+        target = 'video2.avi'
+        media.move_to(target)
+
+        assert_equal File.join(tmpdir.path, target), media.path
+        assert_equal 'avi', media.extname
+        assert_equal 'video2', media.filename
       end
     end
   end
