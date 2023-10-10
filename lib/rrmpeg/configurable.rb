@@ -48,7 +48,7 @@ module RRmpeg
         end
       end
 
-      def _define(config)
+      def _add(config)
         _configs[config.label] = config
 
         define_method(config.label) do |*arg|
@@ -64,8 +64,27 @@ module RRmpeg
 
       def var(label, default: nil)
         var = Var.new(label, default: default)
+        _add(var)
+      end
 
-        _define(var)
+      def flag(label, option:, default: false)
+        flag = Flag.new(label, option: option, default: default)
+        _add(flag)
+      end
+
+      def option(label, option:, default: nil)
+        option = Option.new(label, option: option, default: default)
+        _add(option)
+      end
+
+      def arg(label, default: nil)
+        arg = Arg.new(label, default: default)
+        _add(arg)
+      end
+
+      def group(label)
+        group = Group.new(label)
+        _add(group)
       end
     end
 
@@ -84,6 +103,43 @@ module RRmpeg
       def initialize(label, default: nil)
         @label = label.to_sym
         @default = default
+      end
+    end
+
+    class Flag
+      attr_reader :label, :option, :default
+
+      def initialize(label, option:, default: false)
+        @label = label.to_sym
+        @option = option
+        @default = default
+      end
+    end
+
+    class Option
+      attr_reader :label, :option, :default
+
+      def initialize(label, option:, default: nil)
+        @label = label.to_sym
+        @option = option
+        @default = default
+      end
+    end
+
+    class Arg
+      attr_reader :label, :default
+
+      def initialize(label, default: nil)
+        @label = label.to_sym
+        @default = default
+      end
+    end
+
+    class Group
+      attr_reader :label
+
+      def initialize(label)
+        @label = label
       end
     end
   end
